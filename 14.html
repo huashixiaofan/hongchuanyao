@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>红船谣 - 我的</title>
+<style type="text/css">
+/* 全局重置&基础样式 */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+body {
+	font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+	color: #333;
+	background-color: #f8f9fa;
+	line-height: 1.8;
+}
+.container {
+	width: 90%;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+a {
+	text-decoration: none;
+	color: #333;
+}
+/* 头部导航 - 与主页面样式统一 */
+header {
+	background-color: #fff;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+	padding: 10px 0;
+	position: sticky;
+	top: 0;
+	z-index: 99;
+}
+.header-inner {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.logo {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #dc3545;
+}
+.logo img {
+	height: 40px;
+	width: auto;
+}
+.logo small {
+	font-size: 14px;
+	color: #666;
+	font-weight: normal;
+}
+/* 我的页面核心样式 */
+.my-page {
+	padding: 20px 0 50px;
+}
+/* 登录/头像区域 */
+.user-header {
+	background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+	color: #fff;
+	padding: 30px 0;
+	border-radius: 0 0 20px 20px;
+	margin-bottom: 20px;
+	text-align: center;
+}
+.avatar {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	background-color: #fff;
+	margin: 0 auto 15px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+.avatar:hover {
+	transform: scale(1.05);
+	box-shadow: 0 0 15px rgba(255,255,255,0.8);
+}
+.avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.avatar-placeholder {
+	font-size: 30px;
+	color: #dc3545;
+}
+.user-name {
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.login-btn {
+	display: inline-block;
+	background-color: #fff;
+	color: #dc3545;
+	padding: 8px 25px;
+	border-radius: 20px;
+	font-size: 14px;
+	font-weight: bold;
+	margin-top: 10px;
+	transition: all 0.3s ease;
+}
+.login-btn:hover {
+	background-color: #f8f9fa;
+	transform: translateY(-2px);
+}
+/* 功能入口栏 - 网格布局 */
+.func-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 15px;
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+	margin-bottom: 20px;
+}
+.func-item {
+	text-align: center;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	padding: 10px 5px;
+	border-radius: 8px;
+}
+.func-item:hover {
+	background-color: #fdf2f3;
+	transform: translateY(-3px);
+}
+.func-icon {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	background-color: #fdf2f3;
+	color: #dc3545;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto 10px;
+	font-size: 20px;
+}
+.func-name {
+	font-size: 14px;
+	color: #666;
+}
+/* 预约记录区域 */
+.record-section {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+	padding: 20px;
+	margin-bottom: 20px;
+}
+.section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #eee;
+}
+.section-title {
+	font-size: 16px;
+	font-weight: bold;
+	color: #333;
+}
+.section-more {
+	font-size: 14px;
+	color: #dc3545;
+	cursor: pointer;
+}
+.record-item {
+	padding: 15px 0;
+	border-bottom: 1px solid #f5f5f5;
+}
+.record-item:last-child {
+	border-bottom: none;
+}
+.record-title {
+	font-size: 15px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.record-info {
+	font-size: 13px;
+	color: #666;
+	line-height: 1.5;
+}
+.record-status {
+	display: inline-block;
+	background-color: #d1e7dd;
+	color: #0f5132;
+	padding: 2px 8px;
+	border-radius: 4px;
+	font-size: 12px;
+	margin-top: 5px;
+}
+.no-record {
+	text-align: center;
+	padding: 30px 0;
+	color: #999;
+	font-size: 14px;
+}
+/* 设置区域 */
+.setting-section {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+	padding: 20px;
+}
+.setting-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 15px 0;
+	border-bottom: 1px solid #f5f5f5;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+.setting-item:hover {
+	background-color: #f9f9f9;
+}
+.setting-item:last-child {
+	border-bottom: none;
+}
+.setting-left {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.setting-icon {
+	color: #dc3545;
+	font-size: 18px;
+}
+.setting-name {
+	font-size: 15px;
+	color: #333;
+}
+.setting-right {
+	color: #999;
+	font-size: 14px;
+}
+/* 通用弹窗样式 - 核心修改：确保弹窗居中 */
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.5);
+	display: none;
+	/* 关键：flex布局强制居中，兼容所有浏览器 */
+	display: none;
+	align-items: center;
+	justify-content: center;
+	/* 防止flex不生效的备用方案 */
+	-webkit-box-align: center;
+	-webkit-box-pack: center;
+	box-align: center;
+	box-pack: center;
+	z-index: 999;
+	/* 确保弹窗层级最高 */
+	overflow-y: auto;
+}
+.modal-content {
+	width: 90%;
+	max-width: 400px;
+	background-color: #fff;
+	border-radius: 10px;
+	padding: 25px;
+	position: relative;
+	max-height: 90vh;
+	overflow-y: auto;
+	/* 确保内容块不会超出视口，且居中 */
+	margin: 0 auto;
+}
+.close-btn {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	font-size: 20px;
+	color: #999;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+.close-btn:hover {
+	color: #dc3545;
+}
+.modal-title {
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 20px;
+	color: #dc3545;
+}
+/* 登录弹窗增强样式 */
+.login-type {
+	display: flex;
+	gap: 15px;
+	margin-bottom: 20px;
+}
+.login-type-item {
+	flex: 1;
+	text-align: center;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+.login-type-item.active {
+	border-color: #dc3545;
+	background-color: #fdf2f3;
+	color: #dc3545;
+}
+.login-type-item i {
+	font-size: 20px;
+	margin-bottom: 5px;
+	display: block;
+}
+.form-group {
+	margin-bottom: 20px;
+}
+.form-label {
+	display: block;
+	font-size: 14px;
+	margin-bottom: 8px;
+	color: #666;
+}
+.form-input {
+	width: 100%;
+	padding: 12px 15px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	font-size: 14px;
+}
+.form-input:focus {
+	outline: none;
+	border-color: #dc3545;
+}
+.form-btn {
+	width: 100%;
+	padding: 12px;
+	background-color: #dc3545;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+.form-btn:hover {
+	background-color: #b02a37;
+}
+.tab-switch {
+	display: flex;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #eee;
+}
+.tab-item {
+	flex: 1;
+	text-align: center;
+	padding: 10px 0;
+	font-size: 16px;
+	font-weight: bold;
+	color: #999;
+	cursor: pointer;
+	position: relative;
+}
+.tab-item.active {
+	color: #dc3545;
+}
+.tab-item.active::after {
+	content: '';
+	position: absolute;
+	bottom: -1px;
+	left: 0;
+	width: 100%;
+	height: 2px;
+	background-color: #dc3545;
+}
+.form-tip {
+	text-align: center;
+	font-size: 13px;
+	color: #999;
+	margin-top: 15px;
+}
+/* 头像弹窗样式 */
+.avatar-modal .modal-content {
+	max-width: 300px;
+	text-align: center;
+}
+.avatar-preview {
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	margin: 0 auto 20px;
+	overflow: hidden;
+	border: 3px solid #fdf2f3;
+}
+.avatar-preview img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.avatar-actions {
+	display: flex;
+	gap: 10px;
+	margin-top: 20px;
+}
+.avatar-action-btn {
+	flex: 1;
+	padding: 10px;
+	border-radius: 8px;
+	border: 1px solid #dc3545;
+	background-color: #fff;
+	color: #dc3545;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+.avatar-action-btn.primary {
+	background-color: #dc3545;
+	color: #fff;
+}
+.avatar-action-btn:hover {
+	opacity: 0.9;
+}
+/* 收藏列表样式 */
+.collection-list {
+	margin-top: 15px;
+}
+.collection-item {
+	display: flex;
+	gap: 15px;
+	padding: 15px 0;
+	border-bottom: 1px solid #f5f5f5;
+}
+.collection-item:last-child {
+	border-bottom: none;
+}
+.collection-img {
+
+	width: 80px;
+	height: 80px;
+	border-radius: 8px;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+.collection-img img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.collection-info {
+	flex: 1;
+}
+.collection-title {
+	font-size: 15px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.collection-price {
+	color: #dc3545;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.collection-desc {
+	font-size: 13px;
+	color: #999;
+}
+.collection-remove {
+	color: #999;
+	cursor: pointer;
+	font-size: 14px;
+}
+.collection-remove:hover {
+	color: #dc3545;
+}
+/* 订单列表样式 */
+.order-list {
+	margin-top: 15px;
+}
+.order-item {
+	border: 1px solid #eee;
+	border-radius: 8px;
+	padding: 15px;
+	margin-bottom: 15px;
+}
+.order-header {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #f5f5f5;
+}
+.order-no {
+	font-size: 13px;
+	color: #999;
+}
+.order-status {
+	font-size: 14px;
+	color: #dc3545;
+	font-weight: bold;
+}
+.order-goods {
+	display: flex;
+	gap: 15px;
+	margin-bottom: 10px;
+}
+.order-goods-img {
+	width: 60px;
+	height: 60px;
+	border-radius: 6px;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+.order-goods-img img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.order-goods-info {
+	flex: 1;
+}
+.order-goods-name {
+	font-size: 14px;
+	margin-bottom: 5px;
+}
+.order-goods-price {
+	font-size: 13px;
+	color: #dc3545;
+}
+.order-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.order-total {
+	font-size: 14px;
+	font-weight: bold;
+}
+.order-btn {
+	padding: 5px 15px;
+	border: 1px solid #dc3545;
+	border-radius: 4px;
+	color: #dc3545;
+	font-size: 13px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+.order-btn:hover {
+	background-color: #dc3545;
+	color: #fff;
+}
+/* 评价页面样式 */
+.rating-modal .modal-content {
+	max-width: 400px;
+}
+.rating-stars {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin: 20px 0;
+	font-size: 30px;
+	color: #ddd;
+}
+.rating-star {
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+.rating-star.active,
+.rating-star:hover {
+	color: #ffc107;
+}
+.rating-textarea {
+	width: 100%;
+	height: 100px;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	resize: none;
+	margin-bottom: 20px;
+	font-family: inherit;
+	font-size: 14px;
+}
+.rating-textarea:focus {
+	outline: none;
+	border-color: #dc3545;
+}
+.rating-tip {
+	font-size: 13px;
+	color: #999;
+	margin-bottom: 20px;
+	text-align: center;
+}
+/* 登录成功提示 */
+.login-success {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: rgba(0,0,0,0.8);
+	color: #fff;
+	padding: 15px 30px;
+	border-radius: 8px;
+	font-size: 16px;
+	z-index: 1000;
+	display: none;
+	animation: fadeInOut 2s ease;
+}
+@keyframes fadeInOut {
+	0% { opacity: 0; }
+	20% { opacity: 1; }
+	80% { opacity: 1; }
+	100% { opacity: 0; }
+}
+/* 响应式适配 */
+@media (max-width: 768px) {
+	.func-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+	.user-header {
+		padding: 20px 0;
+	}
+	.avatar {
+		width: 60px;
+		height: 60px;
+	}
+	.rating-stars {
+		font-size: 25px;
+	}
+}
+</style>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<!-- 新增：引入登录工具类 -->
+<script src="login-utils.js"></script>
+</head>
+
+<body>
+<!-- 头部导航 -->
+<header>
+  <div class="container header-inner">
+    <h1 class="logo"> 
+      <a href="18.html"><img src="../../Pictures/Camera Roll/未标题-2.png" alt="红船谣logo"> </a>
+      <small>传承红色记忆</small> 
+    </h1>
+  </div>
+</header>
+
+<!-- 我的页面主体 -->
+<div class="my-page">
+  <div class="container">
+    <!-- 登录/头像区域 -->
+    <div class="user-header">
+      <div class="avatar" id="avatarBtn">
+        <div class="avatar-placeholder" id="avatarPlaceholder"> 
+          <i class="fa fa-user"></i> 
+        </div>
+        <img src="" alt="用户头像" id="avatarImg" style="display: none;"> 
+      </div>
+      <div class="user-name" id="userName">未登录</div>
+      <div class="user-desc" id="userDesc">登录后可查看预约记录、收藏文创</div>
+      <p><a href="javascript:;" class="login-btn" id="showLoginModal">立即登录/注册</a>        </p>
+      <p><a href="18红船谣全部网页.html">回到主页</a></p> 
+    </div>
+    
+
+    <!-- 功能入口栏 -->
+    <div class="func-grid">
+      <a href="15红船谣预约网址.html"class="func-item" id="myReservation">
+        <div class="func-icon"> <i class="fa fa-calendar-check-o"></i> </div>
+        <div class="func-name">我的预约</div>
+      </a>
+      <div class="func-item" id="myCollection">
+        <div class="func-icon"> <i class="fa fa-heart"></i> </div>
+        <div class="func-name">我的收藏</div>
+      </div>
+      <div class="func-item" id="myOrder">
+        <div class="func-icon"> <i class="fa fa-shopping-cart"></i> </div>
+        <div class="func-name">文创订单</div>
+      </div>
+      <div class="func-item" id="myRating">
+        <div class="func-icon"> <i class="fa fa-star"></i> </div>
+        <div class="func-name">我的评价</div>
+      </div>
+    </div>
+
+    <!-- 预约记录区域 -->
+    <div class="record-section">
+      <div class="section-header">
+        <div class="section-title">最近预约</div>
+        <a href="#" class="section-more">查看全部</a> 
+      </div>
+      <div class="record-list" id="recordList">
+        <div class="no-record"> 
+          <i class="fa fa-calendar-o" style="font-size: 30px; margin-bottom: 10px; display: block;"></i> 
+          暂无预约记录，快去预约吧～ 
+        </div>
+      </div>
+    </div>
+
+    <!-- 设置区域 -->
+    <div class="setting-section">
+      <a href="#" class="setting-item">
+        <div class="setting-left">
+          <div class="setting-icon"><i class="fa fa-user-circle"></i></div>
+          <div class="setting-name">个人信息</div>
+        </div>
+        <div class="setting-right"><i class="fa fa-angle-right"></i></div>
+      </a>
+      <a href="#" class="setting-item">
+        <div class="setting-left">
+          <div class="setting-icon"><i class="fa fa-bell"></i></div>
+          <div class="setting-name">消息通知</div>
+        </div>
+        <div class="setting-right"><i class="fa fa-angle-right"></i></div>
+      </a>
+      <a href="#" class="setting-item">
+        <div class="setting-left">
+          <div class="setting-icon"><i class="fa fa-question-circle"></i></div>
+          <div class="setting-name">帮助中心</div>
+        </div>
+        <div class="setting-right"><i class="fa fa-angle-right"></i></div>
+      </a>
+      <a href="#" class="setting-item">
+        <div class="setting-left">
+          <div class="setting-icon"><i class="fa fa-info-circle"></i></div>
+          <div class="setting-name">关于我们</div>
+        </div>
+        <div class="setting-right"><i class="fa fa-angle-right"></i></div>
+      </a>
+      <a href="#" class="setting-item" id="logoutBtn" style="display: none; color: #dc3545;">
+        <div class="setting-left">
+          <div class="setting-icon"><i class="fa fa-sign-out"></i></div>
+          <div class="setting-name">退出登录</div>
+        </div>
+        <div class="setting-right"><i class="fa fa-angle-right"></i></div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- 登录/注册弹窗 -->
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <div class="modal-title">账号登录</div>
+    
+    <!-- 登录方式选择 -->
+    <div class="login-type">
+      <div class="login-type-item active" id="phoneLogin"> 
+        <i class="fa fa-mobile"></i>
+        <div>手机号登录</div>
+      </div>
+      <div class="login-type-item" id="wechatLogin"> 
+        <i class="fa fa-weixin"></i>
+        <div>微信登录</div>
+      </div>
+    </div>
+
+    <!-- 手机号登录表单 -->
+    <div id="phoneLoginForm">
+      <div class="tab-switch">
+        <div class="tab-item active" id="loginTab">登录</div>
+        <div class="tab-item" id="registerTab">注册</div>
+      </div>
+      <!-- 登录表单 -->
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label">手机号</label>
+          <input type="tel" class="form-input" id="loginPhone" placeholder="请输入手机号" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">密码</label>
+          <input type="password" class="form-input" id="loginPwd" placeholder="请输入密码" required>
+        </div>
+        <button type="submit" class="form-btn">登录</button>
+        <div class="form-tip">忘记密码？<a href="#" style="color: #dc3545;">点击找回</a></div>
+      </form>
+      <!-- 注册表单（默认隐藏） -->
+      <form id="registerForm" style="display: none;">
+        <div class="form-group">
+          <label class="form-label">手机号</label>
+          <input type="tel" class="form-input" id="registerPhone" placeholder="请输入手机号" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">验证码</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="text" class="form-input" style="flex: 1;" id="registerCode" placeholder="请输入验证码" required>
+            <button type="button" class="form-btn" style="width: 100px; padding: 0; font-size: 14px;" id="getCodeBtn">获取验证码</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">设置密码</label>
+          <input type="password" class="form-input" id="registerPwd" placeholder="请设置6-16位密码" required>
+        </div>
+        <button type="submit" class="form-btn">注册</button>
+        <div class="form-tip">注册即表示同意<a href="#" style="color: #dc3545;">《用户协议》</a>和<a href="#" style="color: #dc3545;">《隐私政策》</a></div>
+      </form>
+    </div>
+
+    <!-- 微信登录（默认隐藏） -->
+    <div id="wechatLoginForm" style="display: none; text-align: center;">
+      <div style="padding: 20px 0;"> 
+        <i class="fa fa-weixin" style="font-size: 80px; color: #07c160;"></i> 
+      </div>
+      <div style="font-size: 16px; margin-bottom: 30px;"> 请使用微信扫码登录 </div>
+      <div class="wechat-qrcode" style="width: 200px; height: 200px; margin: 0 auto; border: 1px solid #eee; display: flex; align-items: center; justify-content: center;">
+        <span style="color: #999;">扫码登录二维码</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 头像修改弹窗 -->
+<div class="modal avatar-modal" id="avatarModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeAvatarModal">&times;</span>
+    <div class="modal-title">更换头像</div>
+    <div class="avatar-preview">
+      <img src="" id="previewAvatar" alt="头像预览">
+    </div>
+    <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+    <div class="avatar-actions">
+      <button class="avatar-action-btn" id="selectAvatarBtn">选择图片</button>
+      <button class="avatar-action-btn primary" id="saveAvatarBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 收藏列表弹窗 -->
+<div class="modal" id="collectionModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeCollectionModal">&times;</span>
+    <div class="modal-title">我的收藏</div>
+    <div class="collection-list" id="collectionList">
+      <div class="no-record">
+        <i class="fa fa-heart-o" style="font-size: 30px; margin-bottom: 10px; display: block;"></i>
+        暂无收藏的文创～
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 订单列表弹窗 -->
+<div class="modal" id="orderModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeOrderModal">&times;</span>
+    <div class="modal-title">文创订单</div>
+    <div class="order-list" id="orderList">
+      <div class="no-record">
+        <i class="fa fa-shopping-cart-o" style="font-size: 30px; margin-bottom: 10px; display: block;"></i>
+        暂无订单记录～
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 评价弹窗 -->
+<div class="modal rating-modal" id="ratingModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeRatingModal">&times;</span>
+    <div class="modal-title">评价订单</div>
+    <div class="rating-stars" id="ratingStars">
+      <span class="rating-star" data-score="1"><i class="fa fa-star"></i></span>
+      <span class="rating-star" data-score="2"><i class="fa fa-star"></i></span>
+      <span class="rating-star" data-score="3"><i class="fa fa-star"></i></span>
+      <span class="rating-star" data-score="4"><i class="fa fa-star"></i></span>
+      <span class="rating-star" data-score="5"><i class="fa fa-star"></i></span>
+    </div>
+    <textarea class="rating-textarea" placeholder="请输入评价内容（选填）" id="ratingContent"></textarea>
+    <div class="rating-tip">温馨提示：请客观评价您的体验</div>
+    <button class="form-btn" id="submitRatingBtn">提交评价</button>
+  </div>
+</div>
+
+<!-- 登录成功提示框 -->
+<div class="login-success" id="loginSuccessTip">登录成功！</div>
+
+<!-- 先把原来的 <script> 标签和里面的内容全部删掉，替换成下面这段 ES5 兼容代码 -->
+<script type="text/javascript">
+// 全局变量（全部用 var，DW CS6 兼容）
+var userInfo = {
+    isLogin: false,
+    userName: '',
+    avatar: ''
+};
+
+// 本地存储 Key（和 17 号页面保持一致）
+var likedIdsKey = 'likedCulturalCreativeIds';
+var ordersKey = 'culturalCreativeOrders';
+var userKey = 'userLoginStatus';
+
+// 页面加载完成后执行（DW CS6 兼容写法）
+window.onload = function() {
+    // 1. 登录弹窗相关
+    var loginModal = document.getElementById('loginModal');
+    var showLoginModal = document.getElementById('showLoginModal');
+    var closeModal = document.getElementById('closeModal');
+    var phoneLogin = document.getElementById('phoneLogin');
+    var wechatLogin = document.getElementById('wechatLogin');
+    var phoneLoginForm = document.getElementById('phoneLoginForm');
+    var wechatLoginForm = document.getElementById('wechatLoginForm');
+    var loginTab = document.getElementById('loginTab');
+    var registerTab = document.getElementById('registerTab');
+    var loginForm = document.getElementById('loginForm');
+    var registerForm = document.getElementById('registerForm');
+    
+    // 2. 头像相关
+    var avatarBtn = document.getElementById('avatarBtn');
+    var avatarModal = document.getElementById('avatarModal');
+    var closeAvatarModal = document.getElementById('closeAvatarModal');
+    var avatarPlaceholder = document.getElementById('avatarPlaceholder');
+    var avatarImg = document.getElementById('avatarImg');
+    var selectAvatarBtn = document.getElementById('selectAvatarBtn');
+    var avatarUpload = document.getElementById('avatarUpload');
+    var previewAvatar = document.getElementById('previewAvatar');
+    var saveAvatarBtn = document.getElementById('saveAvatarBtn');
+    
+    // 3. 功能入口相关
+    var myCollection = document.getElementById('myCollection');
+    var myOrder = document.getElementById('myOrder');
+    var myRating = document.getElementById('myRating');
+    var logoutBtn = document.getElementById('logoutBtn');
+    
+    // 4. 弹窗相关
+    var collectionModal = document.getElementById('collectionModal');
+    var closeCollectionModal = document.getElementById('closeCollectionModal');
+    var orderModal = document.getElementById('orderModal');
+    var closeOrderModal = document.getElementById('closeOrderModal');
+    var ratingModal = document.getElementById('ratingModal');
+    var closeRatingModal = document.getElementById('closeRatingModal');
+    
+    // 5. 提示框相关
+    var loginSuccessTip = document.getElementById('loginSuccessTip');
+
+    // ========== 工具函数：从本地存储获取数据 ==========
+    function getLocalStorageData(key) {
+        var data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : [];
+    }
+
+    // ========== 工具函数：保存数据到本地存储 ==========
+    function saveToLocalStorage(key, data) {
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    // ========== 登录弹窗显示/隐藏 ==========
+    showLoginModal.onclick = function() {
+        if (!userInfo.isLogin) {
+            loginModal.style.display = 'flex'; // 修改为flex，触发居中
+        }
+    };
+
+    closeModal.onclick = function() {
+        loginModal.style.display = 'none';
+    };
+
+    // 统一处理所有弹窗的点击外部关闭逻辑
+    window.onclick = function(event) {
+        if (event.target == loginModal) {
+            loginModal.style.display = 'none';
+        }
+        if (event.target == avatarModal) {
+            avatarModal.style.display = 'none';
+        }
+        if (event.target == collectionModal) {
+            collectionModal.style.display = 'none';
+        }
+        if (event.target == orderModal) {
+            orderModal.style.display = 'none';
+        }
+        if (event.target == ratingModal) {
+            ratingModal.style.display = 'none';
+        }
+    };
+
+    // ========== 切换登录方式（手机号/微信） ==========
+    phoneLogin.onclick = function() {
+        phoneLogin.className = 'login-type-item active';
+        wechatLogin.className = 'login-type-item';
+        phoneLoginForm.style.display = 'block';
+        wechatLoginForm.style.display = 'none';
+    };
+
+    wechatLogin.onclick = function() {
+        wechatLogin.className = 'login-type-item active';
+        phoneLogin.className = 'login-type-item';
+        phoneLoginForm.style.display = 'none';
+        wechatLoginForm.style.display = 'block';
+    };
+
+    // ========== 切换登录/注册标签 ==========
+    loginTab.onclick = function() {
+        loginTab.className = 'tab-item active';
+        registerTab.className = 'tab-item';
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+    };
+
+    registerTab.onclick = function() {
+        registerTab.className = 'tab-item active';
+        loginTab.className = 'tab-item';
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+    };
+
+    // ========== 登录表单提交 ==========
+    loginForm.onsubmit = function(event) {
+        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+        var phone = document.getElementById('loginPhone').value;
+        var pwd = document.getElementById('loginPwd').value;
+
+        // 简单验证
+        if (!/^1[3-9]\d{9}$/.test(phone)) {
+            alert('请输入正确的手机号');
+            return;
+        }
+        if (pwd.length < 6) {
+            alert('密码长度不能少于6位');
+            return;
+        }
+
+        // 模拟登录成功
+        userInfo.isLogin = true;
+        userInfo.userName = phone.substring(0, 3) + '****' + phone.substring(7);
+        updateUserInfo();
+        loginModal.style.display = 'none';
+
+        // 显示登录成功提示
+        loginSuccessTip.style.display = 'block';
+        setTimeout(function() {
+            loginSuccessTip.style.display = 'none';
+        }, 2000);
+    };
+
+    // ========== 注册表单提交 ==========
+    registerForm.onsubmit = function(event) {
+        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+        var phone = document.getElementById('registerPhone').value;
+        var code = document.getElementById('registerCode').value;
+        var pwd = document.getElementById('registerPwd').value;
+
+        // 验证
+        if (!/^1[3-9]\d{9}$/.test(phone)) {
+            alert('请输入正确的手机号');
+            return;
+        }
+        if (!/^\d{6}$/.test(code)) {
+            alert('请输入6位数字验证码');
+            return;
+        }
+        if (pwd.length < 6 || pwd.length > 16) {
+            alert('密码长度必须在6-16位之间');
+            return;
+        }
+
+        alert('注册成功！请登录');
+        loginTab.onclick(); // 切换到登录标签
+        document.getElementById('loginPhone').value = phone;
+    };
+
+    // ========== 验证码获取 ==========
+    var getCodeBtn = document.getElementById('getCodeBtn');
+    if (getCodeBtn) {
+        getCodeBtn.onclick = function() {
+            var phone = document.getElementById('registerPhone').value;
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                alert('请先输入正确的手机号');
+                return;
+            }
+
+            var count = 60;
+            var btn = this;
+            btn.disabled = true;
+            btn.innerHTML = count + '秒后重新获取';
+
+            var timer = setInterval(function() {
+                count--;
+                btn.innerHTML = count + '秒后重新获取';
+                if (count <= 0) {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.innerHTML = '获取验证码';
+                }
+            }, 1000);
+
+            alert('验证码已发送至手机号：' + phone);
+        };
+    }
+
+    // ========== 头像修改相关 ==========
+    avatarBtn.onclick = function() {
+        if (userInfo.isLogin) {
+            avatarModal.style.display = 'flex'; // 修改为flex，触发居中
+            previewAvatar.src = userInfo.avatar || 'https://via.placeholder.com/120';
+        } else {
+            showLoginModal.onclick();
+        }
+    };
+
+    closeAvatarModal.onclick = function() {
+        avatarModal.style.display = 'none';
+    };
+
+    selectAvatarBtn.onclick = function() {
+        avatarUpload.click();
+    };
+
+    avatarUpload.onchange = function(e) {
+        var file = e.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                previewAvatar.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    saveAvatarBtn.onclick = function() {
+        userInfo.avatar = previewAvatar.src;
+        avatarImg.src = userInfo.avatar;
+        avatarImg.style.display = 'block';
+        avatarPlaceholder.style.display = 'none';
+        avatarModal.style.display = 'none';
+        alert('头像修改成功！');
+    };
+
+    // ========== 我的收藏（关联 17 号页面的「我喜欢」） ==========
+    myCollection.onclick = function() {
+        if (userInfo.isLogin) {
+            collectionModal.style.display = 'flex'; // 修改为flex，触发居中
+            loadCollectionData(); // 加载收藏数据
+        } else {
+            showLoginModal.onclick();
+        }
+    };
+
+    closeCollectionModal.onclick = function() {
+        collectionModal.style.display = 'none';
+    };
+
+    // ========== 文创订单（关联 17 号页面的「加入订单」） ==========
+    myOrder.onclick = function() {
+        if (userInfo.isLogin) {
+            orderModal.style.display = 'flex'; // 修改为flex，触发居中
+            loadOrderData(); // 加载订单数据
+        } else {
+            showLoginModal.onclick();
+        }
+    };
+
+    closeOrderModal.onclick = function() {
+        orderModal.style.display = 'none';
+    };
+
+    // ========== 我的评价 ==========
+    myRating.onclick = function() {
+        if (userInfo.isLogin) {
+            ratingModal.style.display = 'flex'; // 修改为flex，触发居中
+        } else {
+            showLoginModal.onclick();
+        }
+    };
+
+    closeRatingModal.onclick = function() {
+        ratingModal.style.display = 'none';
+    };
+
+    // ========== 评价星级选择 ==========
+    var ratingStars = document.querySelectorAll ? document.querySelectorAll('.rating-star') : [];
+    for (var i = 0; i < ratingStars.length; i++) {
+        ratingStars[i].onclick = function() {
+            var score = this.getAttribute('data-score');
+            var stars = document.querySelectorAll ? document.querySelectorAll('.rating-star') : [];
+            for (var j = 0; j < stars.length; j++) {
+                if (j < score) {
+                    stars[j].className = 'rating-star active';
+                } else {
+                    stars[j].className = 'rating-star';
+                }
+            }
+        };
+    }
+
+    // 提交评价
+    var submitRatingBtn = document.getElementById('submitRatingBtn');
+    if (submitRatingBtn) {
+        submitRatingBtn.onclick = function() {
+            var activeStars = document.querySelectorAll ? document.querySelectorAll('.rating-star.active').length : 0;
+            var content = document.getElementById('ratingContent').value;
+
+            if (activeStars === 0) {
+                alert('请选择评分星级');
+                return;
+            }
+
+            alert('评价提交成功！评分：' + activeStars + '星，内容：' + (content || '无'));
+            ratingModal.style.display = 'none';
+            document.getElementById('ratingContent').value = '';
+            var stars = document.querySelectorAll ? document.querySelectorAll('.rating-star') : [];
+            for (var k = 0; k < stars.length; k++) {
+                stars[k].className = 'rating-star';
+            }
+        };
+    }
+
+    // ========== 退出登录 ==========
+    logoutBtn.onclick = function() {
+        if (confirm('确定要退出登录吗？')) {
+            userInfo = {
+                isLogin: false,
+                userName: '',
+                avatar: ''
+            };
+            updateUserInfo();
+            alert('退出登录成功！');
+        }
+    };
+
+    // ========== 更新用户信息显示 ==========
+    function updateUserInfo() {
+        var userName = document.getElementById('userName');
+        var userDesc = document.getElementById('userDesc');
+
+        if (userInfo.isLogin) {
+            userName.innerHTML = userInfo.userName || '红船谣用户';
+            userDesc.innerHTML = '已登录，可享受完整功能';
+            showLoginModal.style.display = 'none';
+            logoutBtn.style.display = 'block';
+
+            if (userInfo.avatar) {
+                avatarImg.src = userInfo.avatar;
+                avatarImg.style.display = 'block';
+                avatarPlaceholder.style.display = 'none';
+            }
+        } else {
+            userName.innerHTML = '未登录';
+            userDesc.innerHTML = '登录后可查看预约记录、收藏文创';
+            showLoginModal.style.display = 'inline-block';
+            logoutBtn.style.display = 'none';
+            avatarImg.style.display = 'none';
+            avatarPlaceholder.style.display = 'block';
+        }
+    }
+
+    // ========== 加载收藏数据（关联 17 号页面的「我喜欢」） ==========
+    function loadCollectionData() {
+        var collectionList = document.getElementById('collectionList');
+        var likedIds = getLocalStorageData(likedIdsKey);
+
+        // 文创数据（和 17 号页面保持一致）
+        var ccData = [
+            {id: '1', name: '红船礼盒套装', price: '¥199.00', img: '../../Pictures/Camera Roll/d8854664d4c93a2ee2864980473e31402a10e07b1f826603b188f3124ed2e54a.jpg'},
+            {id: '2', name: '红船故事绘本', price: '¥68.00', img: '../../Pictures/Camera Roll/jimeng-2026-02-03-2037-生成相关周边绘本 (1).png'},
+            {id: '3', name: '红船谣主题书签', price: '¥29.00', img: '../../Pictures/Camera Roll/jimeng-2026-02-03-5143-生成文创相关周边.jpg'},
+            {id: '4', name: '红船谣主题印章', price: '¥89.00', img: '../../Pictures/Camera Roll/jimeng-2026-02-03-4870-生成文创印章，实体印章，印泥，符合实际大小，.jpg'},
+            {id: '5', name: '红色文化帆布包', price: '¥59.00', img: '../../Pictures/Camera Roll/jimeng-2026-02-06-2439-去掉.jpg'}
+        ];
+
+        // 筛选已收藏的文创
+        var likedCC = [];
+        for (var i = 0; i < ccData.length; i++) {
+            if (likedIds.indexOf(ccData[i].id) !== -1) {
+                likedCC.push(ccData[i]);
+            }
+        }
+
+        if (likedCC.length > 0) {
+            var html = '';
+            for (var j = 0; j < likedCC.length; j++) {
+                var item = likedCC[j];
+                html += '<div class="collection-item" data-id="' + item.id + '">' +
+                    '<div class="collection-img"><img src="' + item.img + '" alt="' + item.name + '"></div>' +
+                    '<div class="collection-info">' +
+                        '<div class="collection-title">' + item.name + '</div>' +
+                        '<div class="collection-price">' + item.price + '</div>' +
+                        '<div class="collection-desc">1:20比例还原南湖红船，实木材质</div>' +
+                    '</div>' +
+                    '<div class="collection-remove" onclick="removeCollection(\'' + item.id + '\')">移除</div>' +
+                '</div>';
+            }
+            collectionList.innerHTML = html;
+        } else {
+            collectionList.innerHTML = '<div class="no-record"><i class="fa fa-heart-o" style="font-size: 30px; margin-bottom: 10px; display: block;"></i>暂无收藏的文创～</div>';
+        }
+    }
+
+    // ========== 加载订单数据（关联 17 号页面的「加入订单」） ==========
+    function loadOrderData() {
+        var orderList = document.getElementById('orderList');
+        var orders = getLocalStorageData(ordersKey);
+
+        if (orders.length > 0) {
+            var html = '';
+            for (var i = 0; i < orders.length; i++) {
+                var order = orders[i];
+                html += '<div class="order-item">' +
+                    '<div class="order-header">' +
+                        '<div class="order-no">订单编号：' + order.id + '</div>' +
+                        '<div class="order-status">' + order.status + '</div>' +
+                    '</div>' +
+                    '<div class="order-goods">' +
+                        '<div class="order-goods-img"><img src="' + order.img + '" alt="' + order.name + '"></div>' +
+                        '<div class="order-goods-info">' +
+                            '<div class="order-goods-name">' + order.name + '</div>' +
+                            '<div class="order-goods-price">' + order.price + ' × 1</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="order-footer">' +
+                        '<div class="order-total">实付：' + order.price + '</div>' +
+                        '<div class="order-btn" onclick="showRatingModal()">评价</div>' +
+                    '</div>' +
+                '</div>';
+            }
+            orderList.innerHTML = html;
+        } else {
+            orderList.innerHTML = '<div class="no-record"><i class="fa fa-shopping-cart" style="font-size: 30px; margin-bottom: 10px; display: block;"></i>暂无订单记录～</div>';
+        }
+    }
+
+    // ========== 移除收藏项（全局函数，DW CS6 兼容） ==========
+    window.removeCollection = function(id) {
+        if (confirm('确定要移除该收藏吗？')) {
+            var likedIds = getLocalStorageData(likedIdsKey);
+            var newLikedIds = [];
+            for (var i = 0; i < likedIds.length; i++) {
+                if (likedIds[i] !== id) {
+                    newLikedIds.push(likedIds[i]);
+                }
+            }
+            saveToLocalStorage(likedIdsKey, newLikedIds);
+            loadCollectionData();
+            alert('移除成功！');
+        }
+    };
+
+    // ========== 显示评价弹窗（全局函数，DW CS6 兼容） ==========
+    window.showRatingModal = function() {
+        ratingModal.style.display = 'flex'; // 修改为flex，触发居中
+    };
+
+    // 初始化页面
+    updateUserInfo();
+};
+</script>
+</body>
+</html>

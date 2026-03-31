@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>红船谣 - 传承红色文化</title>
+    <style type="text/css">
+        /* 保留原有所有样式，无需修改 */
+        /* 全局重置&基础样式 - 完全适配DWCS6编译 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+            line-height: 1.8;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        a {
+            text-decoration: none;
+            color: #fff;
+        }
+        /* 头部导航 - 和预约页样式统一 */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        .header-inner {
+            display: -webkit-box; /* 兼容DWCS6 flex前缀 */
+            display: -moz-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #dc3545;
+        }
+        .logo small {
+            font-size: 14px;
+            color: #666;
+            font-weight: normal;
+        }
+        .menu-btn {
+            display: block;
+            color: #666;
+            font-size: 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+        /* AI背景图Banner区 - 预留替换图片的位置 */
+        .banner {
+            position: relative;
+            width: 100%;
+            height: 400px; /* 保持原有高度 */
+            overflow: hidden;
+        }
+        .banner-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            -webkit-transform: translate(-50%, -50%); /* 兼容DWCS6 transform前缀 */
+            -moz-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            z-index: 1; /* 视频在下层 */
+        }
+        .banner-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4); /* 半透明黑色遮罩，增强文字可读性 */
+            display: -webkit-box;
+            display: -moz-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2; /* 文字层在上层，覆盖视频 */
+        }
+        .banner-text {
+            text-align: center;
+            color: #fff; /* 文字颜色设为白色，更清晰 */
+        }
+        .banner-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .banner-text p {
+            font-size: 1.2rem;
+        }
+        /* 通用区块标题 - 和预约页样式统一 */
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 50px 0 30px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            -webkit-transform: translateX(-50%);
+            -moz-transform: translateX(-50%);
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: #dc3545;
+        }
+        /* 核心信息区：简介+开馆闭馆时间 */
+        .core-info {
+            background-color: #fff;
+            padding: 40px 0;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        .core-info-content {
+            display: -webkit-box;
+            display: -moz-box;
+            display: flex;
+            -webkit-box-orient: vertical; /* 兼容flex-direction */
+            -moz-box-orient: vertical;
+            flex-direction: column;
+            gap: 40px;
+        }
+        .intro-brief {
+            color: #666;
+            font-size: 16px;
+            text-align: justify;
+        }
+        /* 开馆闭馆时间 - 醒目样式 */
+        .open-time {
+            background-color: #fdf2f3;
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        .open-time h4 {
+            font-size: 20px;
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+        .open-time p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .open-time p span {
+            font-weight: bold;
+            color: #333;
+        }
+        /* 文创展示区 - 响应式卡片 */
+        .cultural-creative {
+            padding: 20px 0 40px;
+        }
+        .cc-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        .cc-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            position: relative; /* 为按钮定位做准备 */
+            cursor: pointer; /* 图片可点击提示 */
+        }
+        .cc-card-img { /* 合并重复样式，DWCS6识别更友好 */
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            -webkit-transition: all 0.3s ease; /* 兼容transition前缀 */
+            -moz-transition: all 0.3s ease;
+            transition: all 0.3s ease; /* 点击放大过渡 */
+        }
+        .cc-card-text {
+            padding: 15px;
+        }
+        .cc-card-text h5 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .cc-card-text p {
+            font-size: 14px;
+            color: #666;
+        }
+        /* 喜欢按钮样式 */
+        .like-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 60px; /* 调整位置，给购买按钮留空间 */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.8);
+            display: -webkit-box;
+            display: -moz-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+        }
+        .like-btn i {
+            font-size: 20px;
+            color: #999;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+        }
+        .like-btn.active i {
+            color: #dc3545; /* 点亮后红色 */
+        }
+        .like-btn:hover {
+            background-color: #fff;
+            -webkit-transform: scale(1.1);
+            -moz-transform: scale(1.1);
+            transform: scale(1.1);
+        }
+        /* 新增：购买按钮样式 */
+        .buy-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(220, 53, 69, 0.8); /* 红色系，匹配主题 */
+            display: -webkit-box;
+            display: -moz-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+        }
+        .buy-btn i {
+            font-size: 20px;
+            color: #fff;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+        }
+        .buy-btn:hover {
+            background-color: #dc3545;
+            -webkit-transform: scale(1.1);
+            -moz-transform: scale(1.1);
+            transform: scale(1.1);
+        }
+        /* 大图预览弹窗样式 */
+        .img-preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 999;
+            display: none;
+            -webkit-box-align: center;
+            -webkit-box-pack: center;
+            -moz-box-align: center;
+            -moz-box-pack: center;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .preview-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .preview-img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            -webkit-transition: -webkit-transform 0.2s ease; /* 兼容过渡 */
+            -moz-transition: -moz-transform 0.2s ease;
+            transition: transform 0.2s ease; /* 滚轮缩放过渡 */
+            -webkit-transform-origin: center center;
+            -moz-transform-origin: center center;
+            transform-origin: center center;
+        }
+        /* 预约跳转按钮区 - 高亮悬浮 */
+        .reserve-btn-section {
+            background-color: #dc3545;
+            padding: 50px 0;
+            text-align: center;
+            margin: 20px 0 40px;
+        }
+        .reserve-btn {
+            display: inline-block;
+            background-color: #fff;
+            color: #dc3545 !important;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 15px 40px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+        }
+        .reserve-btn:hover {
+            background-color: #f8f9fa;
+            -webkit-transform: translateY(-3px);
+            -moz-transform: translateY(-3px);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        /* 底部 - 和预约页样式统一 */
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            padding: 30px 0;
+            text-align: center;
+        }
+        footer p {
+            margin-bottom: 8px;
+        }
+        footer small {
+            color: #ccc;
+            font-size: 12px;
+        }
+        /* 登录提示弹窗 */
+        .login-tip-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            -webkit-box-align: center;
+            -webkit-box-pack: center;
+            -moz-box-align: center;
+            -moz-box-pack: center;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .login-tip-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            width: 80%;
+            max-width: 300px;
+        }
+        .login-tip-content h4 {
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+        .login-tip-content button {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            margin: 10px 5px;
+            cursor: pointer;
+        }
+        .login-tip-content button.cancel-btn {
+            background: #999;
+        }
+        /* 响应式适配 - PC端样式（DWCS6可正常预览） */
+        @media (min-width: 768px) {
+            /* logo容器：让图片和文字垂直居中 */
+            .logo {
+                display: -webkit-box;
+                display: -moz-box;
+                display: flex;
+                -webkit-box-align: center;
+                -moz-box-align: center;
+                align-items: center;
+                gap: 10px; /* 图片和“传承红色记忆”之间的间距 */
+                margin: 0;
+            }
+            /* logo图片：控制大小和显示 */
+            .logo-img {
+                height: 40px; /* 调整高度，和原来的文字logo高度匹配 */
+                width: auto; /* 保持图片比例 */
+                vertical-align: middle;
+            }
+            /* 保持“传承红色记忆”的小字体样式 */
+            .logo small {
+                font-size: 0.8em;
+                color: #666;
+            }
+            .menu-btn {
+                display: none;
+            }
+            .banner-text h2 {
+                font-size: 48px;
+            }
+            .banner-text p {
+                font-size: 20px;
+            }
+            .section-title {
+                font-size: 30px;
+            }
+            .core-info-content {
+                -webkit-box-orient: horizontal; /* 切换为横向 */
+                -moz-box-orient: horizontal;
+                flex-direction: row;
+                -webkit-box-pack: justify;
+                -moz-box-pack: justify;
+                justify-content: space-between;
+                -webkit-box-align: center;
+                -moz-box-align: center;
+                align-items: center;
+            }
+            .intro-brief {
+                width: 65%;
+            }
+            .open-time {
+                width: 30%;
+            }
+            .cc-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .cc-card-img { /* PC端图片高度 */
+                height: 220px;
+            }
+        }
+        @media (min-width: 992px) {
+            .cc-cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style type="text/css">
+    .logo1 {            font-size: 18px;
+            font-weight: bold;
+            color: #dc3545;
+}
+.logo1 {                display: -webkit-box;
+                display: -moz-box;
+                display: flex;
+                -webkit-box-align: center;
+                -moz-box-align: center;
+                align-items: center;
+                gap: 10px; /* 图片和“传承红色记忆”之间的间距 */
+                margin: 0;
+}
+    .logo11 {font-size: 18px;
+            font-weight: bold;
+            color: #dc3545;
+}
+.logo11 {display: -webkit-box;
+                display: -moz-box;
+                display: flex;
+                -webkit-box-align: center;
+                -moz-box-align: center;
+                align-items: center;
+                gap: 10px; /* 图片和“传承红色记忆”之间的间距 */
+                margin: 0;
+}
+    .logo2 {            font-size: 18px;
+            font-weight: bold;
+            color: #dc3545;
+}
+.logo2 {                display: -webkit-box;
+                display: -moz-box;
+                display: flex;
+                -webkit-box-align: center;
+                -moz-box-align: center;
+                align-items: center;
+                gap: 10px; /* 图片和“传承红色记忆”之间的间距 */
+                margin: 0;
+}
+.logo111 {font-size: 18px;
+            font-weight: bold;
+            color: #dc3545;
+}
+.logo111 {display: -webkit-box;
+                display: -moz-box;
+                display: flex;
+                -webkit-box-align: center;
+                -moz-box-align: center;
+                align-items: center;
+                gap: 10px; /* 图片和“传承红色记忆”之间的间距 */
+                margin: 0;
+}
+    </style>
+    <!-- 新增：引入登录工具类 -->
+<script src="login-utils.js"></script>
+</head>
+<body>
+    <!-- 头部导航（增加个人中心入口） -->
+    <header>
+        <div class="container header-inner">
+            <div class="logo"><small><span class="logo2"><small><span class="logo111"><a href="18.html"><img src="../../Pictures/Camera Roll/未标题-2.png" alt="红船谣logo" width="40" height="67"></a></span></small></span>传承红色记忆</small>
+            </div>
+            <!-- 新增：个人中心入口 -->
+            <a href="14.html" class="menu-btn" style="color:#dc3545;">
+                <i class="fa fa-user-circle"></i> 我的
+            </a>
+        </div>
+    </header>
+
+    <!-- 保留原有Banner区（如果需要） -->
+    <div class="banner">
+        <div class="banner-mask">
+            <div class="banner-text">
+                <h2>红船谣 - 传承红色文化</h2>
+                <p>品红色文创，忆百年初心</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 核心信息区（保留原有） -->
+    <section class="container core-info">
+        <h3 class="section-title">场馆介绍</h3>
+        <div class="core-info-content">
+            <div class="intro-brief">
+                红船谣展馆以"传承红色记忆，弘扬红船精神"为核心，展示南湖红船的历史背景、红色文化发展历程，馆内陈列各类红船主题文创产品，让红色文化可触可感、可藏可传。
+            </div>
+            <div class="open-time">
+                <h4>开馆时间</h4>
+                <p><span>周一至周五：</span>09:00 - 17:00</p>
+                <p><span>周六至周日：</span>09:00 - 18:00</p>
+                <p><span>节假日：</span>正常开放</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 文创展示区【重点：替换你的文创图片链接】 -->
+    <section class="container cultural-creative">
+        <h3 class="section-title">红船文创</h3>
+        <div class="cc-cards">
+            <!-- 文创卡片1 -->
+            <div class="cc-card" data-id="1" data-name="红船礼盒套装" data-price="299元" data-img="../../Pictures/Camera Roll/d8854664d4c93a2ee2864980473e31402a10e07b1f826603b188f3124ed2e54a.jpg">
+                <img src="../../Pictures/Camera Roll/d8854664d4c93a2ee2864980473e31402a10e07b1f826603b188f3124ed2e54a.jpg" alt="红船主题文创" class="cc-card-img">
+                <div class="cc-card-text">
+                    <h5>红船礼盒套装</h5>
+                    <p>1:20比例还原南湖红船，实木材质，工艺精细，可收藏、可摆放。</p>
+                    <p>299元</p>
+                </div>
+                <!-- 喜欢按钮 -->
+                <button class="like-btn">
+                    <i class="fa fa-heart"></i>
+                </button>
+                <!-- 新增：购买按钮 -->
+                <button class="buy-btn">
+                    <i class="fa fa-shopping-cart"></i>
+                </button>
+            </div>
+            <!-- 文创卡片2 -->
+            <div class="cc-card" data-id="2" data-name="红船故事绘本" data-price="68元" data-img="../../Pictures/Camera Roll/jimeng-2026-02-03-2037-生成相关周边绘本 (1).png">
+                <img src="../../Pictures/Camera Roll/jimeng-2026-02-03-2037-生成相关周边绘本 (1).png" alt="红船主题文创" class="cc-card-img">
+                <div class="cc-card-text">
+                    <h5>红船故事绘本</h5>
+                    <p>以童趣画面溯红船初心，绘红色历程，传百年红船精神。</p>
+                    <p>68元</p>
+                </div>
+                <!-- 喜欢按钮 -->
+                <button class="like-btn">
+                    <i class="fa fa-heart"></i>
+                </button>
+                <!-- 新增：购买按钮 -->
+                <button class="buy-btn">
+                    <i class="fa fa-shopping-cart"></i>
+                </button>
+            </div>
+            <!-- 文创卡片3 -->
+            <div class="cc-card" data-id="3" data-name="红船谣主题书签" data-price="39元" data-img="../../Pictures/Camera Roll/jimeng-2026-02-03-5143-生成文创相关周边.jpg">
+                <img src="../../Pictures/Camera Roll/jimeng-2026-02-03-5143-生成文创相关周边.jpg" alt="红船主题文创" class="cc-card-img">
+                <div class="cc-card-text">
+                    <h5>红船谣主题书签</h5>
+                    <p>金属镂空工艺，刻有红船谣经典诗句，搭配流苏，文艺又实用。</p>
+                    <p>39元</p>
+                </div>
+                <!-- 喜欢按钮 -->
+                <button class="like-btn">
+                    <i class="fa fa-heart"></i>
+                </button>
+                <!-- 新增：购买按钮 -->
+                <button class="buy-btn">
+                    <i class="fa fa-shopping-cart"></i>
+                </button>
+            </div>
+            <!-- 文创卡片4 -->
+            <div class="cc-card" data-id="4" data-name="红船谣主题印章" data-price="89元" data-img="../../Pictures/Camera Roll/jimeng-2026-02-03-4870-生成文创印章，实体印章，印泥，符合实际大小，.jpg">
+                <img src="../../Pictures/Camera Roll/jimeng-2026-02-03-4870-生成文创印章，实体印章，印泥，符合实际大小，.jpg" alt="红船主题文创" class="cc-card-img">
+                <div class="cc-card-text">
+                    <h5>红船谣主题印章</h5>
+                    <p>镌百年风华，以印为媒承红色文脉，融文创之美与信仰之力。</p>
+                    <p>89元</p>
+                </div>
+                <!-- 喜欢按钮 -->
+                <button class="like-btn">
+                    <i class="fa fa-heart"></i>
+                </button>
+                <!-- 新增：购买按钮 -->
+                <button class="buy-btn">
+                    <i class="fa fa-shopping-cart"></i>
+                </button>
+            </div>
+            <!-- 文创卡片5 -->
+            <div class="cc-card" data-id="5" data-name="红色文化帆布包" data-price="59元" data-img="../../Pictures/Camera Roll/jimeng-2026-02-06-2439-去掉.jpg">
+                <img src="../../Pictures/Camera Roll/jimeng-2026-02-06-2439-去掉.jpg"class="cc-card-img">
+                <div class="cc-card-text">
+                    <h5>红色文化帆布包</h5>
+                    <p>印刻红船与红船谣标语，纯棉材质，大容量，兼具实用性与纪念意义。</p>
+                    <p>59元</p>
+                </div>
+                <!-- 喜欢按钮 -->
+                <button class="like-btn">
+                    <i class="fa fa-heart"></i>
+                </button>
+                <!-- 新增：购买按钮 -->
+                <button class="buy-btn">
+                    <i class="fa fa-shopping-cart"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 预约跳转按钮区（保留） -->
+    <section class="reserve-btn-section">
+        <a href="15.html" class="reserve-btn">立即预约参观</a>
+    </section>
+
+    <!-- 大图预览弹窗 -->
+    <div class="img-preview-modal" id="previewModal">
+        <span class="preview-close" id="previewClose">&times;</span>
+        <img src="" alt="文创大图预览" class="preview-img" id="previewImg">
+    </div>
+
+    <!-- 登录提示弹窗 -->
+    <div class="login-tip-modal" id="loginTipModal">
+        <div class="login-tip-content">
+            <h4><i class="fa fa-exclamation-circle"></i> 请先登录</h4>
+            <p>登录后才能收藏/购买文创哦～</p>
+            <button id="goLoginBtn">去登录</button>
+            <button class="cancel-btn" id="cancelLoginBtn">取消</button>
+        </div>
+    </div>
+
+    <!-- 底部（保留） -->
+    <footer>
+        <div class="container">
+            <p>红船谣展馆 © 2025 版权所有</p>
+            <p>地址：浙江省嘉兴市南湖区南湖路1号</p>
+            <small>传承红色记忆 · 弘扬红船精神</small>
+        </div>
+    </footer>
+
+    <script type="text/javascript"> // 显式声明type，完全适配DWCS6
+        // ========== 全局变量 ==========
+        var likeBtns = document.querySelectorAll('.like-btn');
+        var buyBtns = document.querySelectorAll('.buy-btn');
+        var ccCards = document.querySelectorAll('.cc-card');
+        var previewModal = document.getElementById('previewModal');
+        var previewImg = document.getElementById('previewImg');
+        var previewClose = document.getElementById('previewClose');
+        var loginTipModal = document.getElementById('loginTipModal');
+        var goLoginBtn = document.getElementById('goLoginBtn');
+        var cancelLoginBtn = document.getElementById('cancelLoginBtn');
+        
+        // 本地存储Key
+        var likedIdsKey = 'likedCulturalCreativeIds';
+        var ordersKey = 'culturalCreativeOrders';
+        var userKey = 'userLoginStatus';
+
+        // ========== 1. 工具函数 ==========
+        // 获取登录状态
+        function isUserLogin() {
+            var user = localStorage.getItem(userKey);
+            return user ? JSON.parse(user).isLogin : false;
+        }
+
+        // 从本地存储获取数据
+        function getLocalStorageData(key) {
+            var data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : [];
+        }
+
+        // 保存数据到本地存储
+        function saveToLocalStorage(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        // ========== 2. 喜欢按钮功能（联动14号页面我的收藏） ==========
+        // 初始化喜欢按钮状态
+        function initLikeBtns() {
+            var likedIds = getLocalStorageData(likedIdsKey);
+            likeBtns.forEach(function(btn) {
+                var card = btn.closest('.cc-card');
+                var cardId = card.dataset.id;
+                if (likedIds.indexOf(cardId) != -1) {
+                    btn.className += ' active';
+                }
+            });
+        }
+
+        // 点击喜欢按钮切换状态
+        function bindLikeBtnEvent() {
+            likeBtns.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation(); // 阻止事件冒泡到卡片
+                    
+                    // 未登录则提示
+                    if (!isUserLogin()) {
+                        loginTipModal.style.display = '-webkit-box';
+                        loginTipModal.style.display = '-moz-box';
+                        loginTipModal.style.display = 'flex';
+                        return;
+                    }
+
+                    var card = btn.closest('.cc-card');
+                    var cardId = card.dataset.id;
+                    var likedIds = getLocalStorageData(likedIdsKey);
+                    
+                    // 切换收藏状态
+                    if (likedIds.indexOf(cardId) != -1) {
+                        // 取消收藏
+                        likedIds = likedIds.filter(function(id) {
+                            return id != cardId;
+                        });
+                        btn.className = btn.className.replace(' active', '');
+                    } else {
+                        // 添加收藏
+                        likedIds.push(cardId);
+                        btn.className += ' active';
+                    }
+                    
+                    // 保存到本地存储（同步到14号页面）
+                    saveToLocalStorage(likedIdsKey, likedIds);
+                    alert(likedIds.indexOf(cardId) != -1 ? '收藏成功！' : '取消收藏成功！');
+                });
+            });
+        }
+
+        // ========== 3. 购买按钮功能（联动14号页面文创订单） ==========
+        function bindBuyBtnEvent() {
+            buyBtns.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation(); // 阻止事件冒泡到卡片
+                    
+                    // 未登录则提示
+                    if (!isUserLogin()) {
+                        loginTipModal.style.display = '-webkit-box';
+                        loginTipModal.style.display = '-moz-box';
+                        loginTipModal.style.display = 'flex';
+                        return;
+                    }
+
+                    var card = btn.closest('.cc-card');
+                    var cardId = card.dataset.id;
+                    var cardName = card.dataset.name;
+                    var cardPrice = card.dataset.price;
+                    var cardImg = card.dataset.img;
+                    
+                    // 生成订单
+                    var order = {
+                        id: 'order_' + new Date().getTime(), // 唯一订单号
+                        ccId: cardId,
+                        name: cardName,
+                        price: cardPrice,
+                        img: cardImg,
+                        time: new Date().toLocaleString(),
+                        status: '待支付'
+                    };
+                    
+                    // 获取现有订单并添加新订单
+                    var orders = getLocalStorageData(ordersKey);
+                    orders.push(order);
+                    saveToLocalStorage(ordersKey, orders);
+                    
+                    alert('加入订单成功！可在「我的-文创订单」中查看');
+                });
+            });
+        }
+
+        // ========== 4. 图片预览功能（保留原有） ==========
+        function bindCardClickEvent() {
+            ccCards.forEach(function(card) {
+                card.addEventListener('click', function() {
+                    var imgSrc = this.querySelector('.cc-card-img').src;
+                    previewImg.src = imgSrc;
+                    previewModal.style.display = '-webkit-box';
+                    previewModal.style.display = '-moz-box';
+                    previewModal.style.display = 'flex';
+                });
+            });
+            
+            // 关闭预览
+            previewClose.addEventListener('click', function() {
+                previewModal.style.display = 'none';
+            });
+            
+            // 点击空白处关闭预览
+            previewModal.addEventListener('click', function(e) {
+                if (e.target == previewModal) {
+                    previewModal.style.display = 'none';
+                }
+            });
+        }
+
+        // ========== 5. 登录提示弹窗事件 ==========
+        function bindLoginTipEvent() {
+            // 去登录
+            goLoginBtn.addEventListener('click', function() {
+                loginTipModal.style.display = 'none';
+                window.location.href = '14红船谣预约网址.html'; // 跳转到个人中心登录
+            });
+            
+            // 取消
+            cancelLoginBtn.addEventListener('click', function() {
+                loginTipModal.style.display = 'none';
+            });
+        }
+
+        // ========== 初始化所有功能 ==========
+        window.onload = function() {
+            initLikeBtns();
+            bindLikeBtnEvent();
+            bindBuyBtnEvent();
+            bindCardClickEvent();
+            bindLoginTipEvent();
+        };
+    </script>
+    <!-- 新增登录状态检查 - 17.html（ES5版） -->
+<div id="unlogin-tip" style="text-align:center; padding:20px; background:#fdf2f3; border-radius:8px; margin:20px 0;">
+  您尚未登录 😯 <button id="to-login-btn" style="background:#dc3545; color:#fff; border:none; padding:8px 20px; border-radius:20px; cursor:pointer;">点击登录</button> 后可购买/收藏文创～
+</div>
+
+<script>
+window.onload = function() {
+    // 1. 获取元素
+    var unloginTip = document.getElementById("unlogin-tip");
+    var toLoginBtn = document.getElementById("to-login-btn");
+    // 找到你页面里的购买、收藏按钮（兼容老浏览器）
+    var buyBtns = document.getElementsByTagName("button"); // 如果有特定类名，改这里：document.getElementsByClassName("buy-btn")
+    var likeBtns = document.getElementsByClassName("like-btn");
+
+    // 2. 检查登录状态
+    if (LoginUtils.isLogin()) {
+        // 已登录：隐藏未登录提示，解锁购买/收藏按钮
+        unloginTip.style.display = "none";
+        // 解锁购买按钮
+        for (var i = 0; i < buyBtns.length; i++) {
+            buyBtns[i].disabled = false;
+            buyBtns[i].style.opacity = "1";
+        }
+        // 解锁收藏按钮
+        for (var j = 0; j < likeBtns.length; j++) {
+            likeBtns[j].disabled = false;
+            likeBtns[j].style.opacity = "1";
+        }
+    } else {
+        // 未登录：禁用购买/收藏按钮
+        for (var m = 0; m < buyBtns.length; m++) {
+            buyBtns[m].disabled = true;
+            buyBtns[m].style.opacity = "0.5";
+        }
+        for (var n = 0; n < likeBtns.length; n++) {
+            likeBtns[n].disabled = true;
+            likeBtns[n].style.opacity = "0.5";
+        }
+
+        // 点击登录按钮，跳转到14.html
+        toLoginBtn.onclick = function() {
+            var returnUrl = encodeURIComponent(window.location.href);
+            window.location.href = "14.html?returnUrl=" + returnUrl;
+        };
+    }
+};
+</script>
+</body>
+</html>

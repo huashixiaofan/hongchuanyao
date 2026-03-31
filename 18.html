@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>红船谣 - 传承红色文化</title>
+    <style type="text/css">
+        /* 全局重置&基础样式 - Dreamweaver CS6完全兼容 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+            line-height: 1.8;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        a {
+            text-decoration: none;
+            color: #fff;
+        }
+        /* 头部导航 - 和预约页样式统一 */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #dc3545;
+        }
+        .logo small {
+            font-size: 14px;
+            color: #666;
+            font-weight: normal;
+        }
+        .menu-btn {
+            display: block;
+            color: #666;
+            font-size: 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+        /* AI背景图Banner区 - 预留你替换图片的位置 */
+.banner {
+  position: relative;
+  width: 100%;
+  height: 400px; /* 保持你原来的高度 */
+  overflow: hidden;
+}
+
+.banner-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  z-index: 1; /* 视频在下层 */
+}
+
+.banner-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* 半透明黑色遮罩，增强文字可读性 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2; /* 文字层在上层，覆盖视频 */
+}
+
+.banner-text {
+  text-align: center;
+  color: #fff; /* 文字颜色设为白色，更清晰 */
+}
+
+.banner-text h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.banner-text p {
+  font-size: 1.2rem;
+}
+        /* 通用区块标题 - 和预约页样式统一 */
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 50px 0 30px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: #dc3545;
+        }
+        /* 核心信息区：简介+开馆闭馆时间 */
+        .core-info {
+            background-color: #fff;
+            padding: 40px 0;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        .core-info-content {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        .intro-brief {
+            color: #666;
+            font-size: 16px;
+            text-align: justify;
+        }
+        /* 开馆闭馆时间 - 醒目样式 */
+        .open-time {
+            background-color: #fdf2f3;
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        .open-time h4 {
+            font-size: 20px;
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+        .open-time p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .open-time p span {
+            font-weight: bold;
+            color: #333;
+        }
+        /* 文创展示区 - 响应式卡片 */
+        .cultural-creative {
+            padding: 20px 0 40px;
+        }
+        .cc-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        .cc-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .cc-card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .cc-card-text {
+            padding: 15px;
+        }
+        .cc-card-text h5 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .cc-card-text p {
+            font-size: 14px;
+            color: #666;
+        }
+        /* 横向导航栏样式 - 替换原纵向按钮 */
+        .nav-section {
+            background-color: #dc3545;
+            padding: 30px 0;
+            margin: 20px 0 40px;
+            border-radius: 8px;
+        }
+        .nav-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap; /* 移动端自动换行 */
+            gap: 20px; /* 导航项间距 */
+            list-style: none;
+        }
+        .nav-item {
+            flex-shrink: 0;
+        }
+        .nav-link {
+            display: inline-block;
+            background-color: #fff;
+            color: #dc3545 !important;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        /* 底部 - 和预约页样式统一 */
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            padding: 30px 0;
+            text-align: center;
+        }
+        footer p {
+            margin-bottom: 8px;
+        }
+        footer small {
+            color: #ccc;
+            font-size: 12px;
+        }
+        /* 响应式适配 - PC端样式（CS6可正常预览） */
+        @media (min-width: 768px) {
+/* logo容器：让图片和文字垂直居中 */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 图片和“传承红色记忆”之间的间距 */
+  margin: 0;
+}
+
+/* logo图片：控制大小和显示 */
+.logo-img {
+  height: 40px; /* 调整高度，和原来的文字logo高度匹配 */
+  width: auto; /* 保持图片比例 */
+  vertical-align: middle;
+}
+
+/* 保持“传承红色记忆”的小字体样式 */
+.logo small {
+  font-size: 0.8em;
+  color: #666; /* 可根据需要调整颜色 */
+}
+            .menu-btn {
+                display: none;
+            }
+            .banner-text h2 {
+                font-size: 48px;
+            }
+            .banner-text p {
+                font-size: 20px;
+            }
+            .section-title {
+                font-size: 30px;
+            }
+            .core-info-content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .intro-brief {
+                width: 65%;
+            }
+            .open-time {
+                width: 30%;
+            }
+            .cc-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .cc-card-img {
+                height: 220px;
+            }
+            /* PC端导航项间距加大 */
+            .nav-list {
+                gap: 30px;
+            }
+            .nav-link {
+                font-size: 20px;
+                padding: 15px 40px;
+            }
+        }
+        @media (min-width: 992px) {
+            .cc-cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        .cc-card-img1 {            
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .cc-card-img1 {                
+            height: 220px;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- 头部导航 -->
+<header>
+  <div class="container header-inner">
+    <!-- 原来的纯文字logo -->
+    <!-- <h1 class="logo"><small>传承红色记忆</small></h1> -->
+
+    <!-- 替换为图片logo -->
+    <h1 class="logo">
+      <img src="../../Pictures/Camera Roll/未标题-2.png" width="36" height="64">
+      <small>传承红色记忆</small>
+    </h1>
+
+    <button class="menu-btn"><i class="fa fa-bars"></i></button>
+  </div>
+</header>
+
+<!-- AI背景图Banner区【重点：替换你的AI背景图链接】 -->
+<section class="banner">
+  <!-- 背景视频 -->
+  <video class="banner-video" autoplay muted loop playsinline>
+    <source src="../../Videos/Captures/微信视频.mp4" type="video/mp4">
+    你的浏览器不支持视频播放。
+  </video>
+  
+  <!-- 文字遮罩层 -->
+  <div class="banner-mask">
+    <div class="banner-text">
+      <h2>红船谣 · 裸眼3D红色文化体验馆</h2>
+      <p>开天辟地 敢为人先 坚定理想 百折不挠</p >
+    </div>
+  </div>
+</section>
+
+    <!-- 核心信息区：简介+开馆闭馆时间 -->
+    <section class="container core-info">
+        <h3 class="section-title">馆区简介</h3>
+        <div class="core-info-content">
+            <p class="intro-brief">
+                红船谣裸眼3D红色文化体验馆以嘉兴南湖红船历史为核心，打造沉浸式红色文化体验空间。馆内通过红船歌谣演绎、历史场景还原、红色故事讲解等形式，让参观者近距离感受红船精神的内涵。同时馆内推出多款红船主题文创产品，将红色文化与现代创意结合，让红色记忆可触、可感、可收藏。体验馆面向个人、学校、企业团体开放，提供定制化研学、参观服务，是传承红色文化、开展爱国主义教育的重要阵地。
+            </p>
+            <div class="open-time">
+              <h4><i class="fa fa-clock-o mr-2"></i>开馆闭馆时间</h4>
+                <p><span>日常开馆：</span>9:00 - 17:00</p>
+                <p><span>闭馆时间：</span>每周一（法定节假日除外）</p>
+                <p><span>节假日：</span>8:30 - 17:30</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 横向导航栏（替换原纵向按钮） -->
+    <section class="nav-section">
+        <div class="container">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="15.html#reservation-section" class="nav-link" target="_self">
+                        <i class="fa fa-calendar-check-o mr-2"></i>立即预约参观
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="17.html" class="nav-link" target="_self">
+                        <i class="fa fa-calendar-check-o mr-2"></i>红船谣原创文创
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="13.html" class="nav-link" target="_self">
+                        <i class="fa fa-calendar-check-o mr-2"></i>红船谣地图导航
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="14.html" class="nav-link" target="_self">
+                        <i class="fa fa-user mr-2"></i>我的
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer>
+        <div class="container">
+            <p>红船谣红色文化体验馆 版权所有</p>
+            <p>地址：浙江省嘉兴市南湖区南湖路1号 丨 咨询电话：0573-12345678</p>
+            <small>本页面支持微信/手机/电脑端访问 | 预约通道24小时开放</small>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            // 可选：给菜单按钮加点击提示（可拓展成导航菜单）
+            var menuBtn = document.querySelector('.menu-btn');
+            menuBtn.onclick = function() {
+                alert('红船谣导航菜单，可根据需求拓展');
+            }
+        }
+    </script>
+</body>
+</html>

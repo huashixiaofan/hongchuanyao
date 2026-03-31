@@ -1,0 +1,749 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>红船谣 - 全域红色革命路线交互地图（AI地形图版）</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" type="text/css" />
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
+<style type="text/css">
+/* 基础样式 - DW CS6兼容 */
+body,html {
+	margin:0;
+	padding:0;
+	font-family:"微软雅黑", Arial, Helvetica, sans-serif;
+	height:100%;
+}
+#map {
+	width:100%;
+	height:calc(100% - 60px);
+	overflow:hidden;
+}
+/* 章节控制栏样式 */
+.chapter-control {
+	height:60px;
+	background:#f5f5f5;
+	border-bottom:2px solid #C72E29;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	gap:20px;
+	padding:0 20px;
+}
+.chapter-title {
+	font-size:20px;
+	font-weight:bold;
+	color:#C72E29;
+}
+.chapter-btn {
+	padding:8px 20px;
+	border:none;
+	border-radius:4px;
+	background:#C72E29;
+	color:#fff;
+	cursor:pointer;
+	font-size:16px;
+}
+.chapter-btn:hover {
+	background:#A5221E;
+}
+.chapter-btn.disabled {
+	background:#ccc;
+	cursor:not-allowed;
+}
+/* 第一序列（南部）标记样式 - 红色圆形（下层） */
+.marker-south {
+	width:60px; 
+	height:60px; 
+	background:#C72E29; 
+	border-radius:50%;
+	border:3px solid #fff;
+	box-shadow:0 2px 8px rgba(0,0,0,0.3);
+	cursor:pointer;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	color:#fff;
+	font-weight:bold;
+	font-size:12px; 
+	line-height:1.2; 
+}
+/* 第二序列（北部）标记样式 - 黄色方形（上层） */
+.marker-north {
+	width:55px; 
+	height:55px; 
+	background:#FDB913; 
+	border-radius:6px;
+	border:3px solid #C72E29;
+	box-shadow:0 2px 8px rgba(0,0,0,0.3);
+	cursor:pointer;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	color:#C72E29;
+	font-weight:bold;
+	font-size:12px; 
+	line-height:1.2; 
+}
+/* 红旗标记样式（路线结束点） */
+.marker-flag {
+	width:40px;
+	height:40px;
+	background:transparent;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	font-size:36px;
+	color:#C72E29;
+	text-shadow:0 2px 5px rgba(0,0,0,0.3);
+	z-index: 1000;
+}
+/* 优化后的路线样式（贴合地图实际） */
+.route-line {
+	color: #C72E29;
+	weight: 6; /* 基础宽度 */
+	opacity: 0.85;
+	lineCap: round;
+	lineJoin: round;
+	dashArray: 0;
+	/* 地图缩放自适应宽度 */
+	stroke-width: calc(1px + (6 - map.getZoom()) * 0.2);
+}
+/* 路线悬浮效果 */
+.route-line:hover {
+	opacity: 1;
+	weight: 8;
+}
+/* 弹窗样式（区分序列标题色） */
+.popup-box {
+	width:300px;
+	padding:8px;
+}
+.popup-title-south {
+	font-size:18px;
+	font-weight:bold;
+	color:#C72E29;
+	padding-bottom:8px;
+	border-bottom:2px solid #C72E29;
+	margin-bottom:10px;
+}
+.popup-title-north {
+	font-size:18px;
+	font-weight:bold;
+	color:#FDB913;
+	padding-bottom:8px;
+	border-bottom:2px solid #FDB913;
+	margin-bottom:10px;
+}
+.popup-img {
+	width:100%;
+	height:180px;
+	border-radius:6px;
+	margin-bottom:10px;
+}
+.popup-info {
+	line-height:1.6;
+	margin-bottom:6px;
+	font-size:14px;
+}
+.popup-label {
+	font-weight:bold;
+	color:#333;
+}
+.nav-btn {
+	display:inline-block;
+	background:#C72E29;
+	color:#fff;
+	text-decoration:none;
+	padding:6px 12px;
+	border-radius:4px;
+	margin-top:8px;
+}
+.nav-btn:hover {
+	background:#A5221E;
+}
+/* AI助手样式（优化消息格式） */
+.ai-assistant {
+	position: fixed;
+	left: 0;
+	top: 20%;
+	width: 300px;
+	height: 450px;
+	background: #fff;
+	border-radius: 0 10px 10px 0;
+	box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+	z-index: 9999;
+	transition: all 0.3s ease;
+}
+.ai-toggle {
+	position: absolute;
+	right: -10px;
+	top: 10px;
+	width: 30px;
+	height: 30px;
+	background: #C72E29;
+	color: #fff;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+	z-index: 10000;
+}
+.ai-header {
+	background: #C72E29;
+	color: #fff;
+	padding: 12px;
+	border-radius: 0 10px 0 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.ai-title {
+	font-size: 16px;
+	font-weight: bold;
+}
+.ai-chat {
+	height: 320px;
+	overflow-y: auto;
+	padding: 10px;
+	background: #f9f9f9;
+}
+/* 优化AI消息样式，支持结构化显示 */
+.ai-message {
+	margin: 8px 0;
+	padding: 8px 12px;
+	border-radius: 8px;
+	max-width: 80%;
+	word-wrap: break-word;
+}
+.ai-bot {
+	background: #C72E29;
+	color: #fff;
+	align-self: flex-start;
+}
+.ai-user {
+	background: #e0e0e0;
+	color: #333;
+	align-self: flex-end;
+	margin-left: auto;
+}
+/* AI回答中的强调样式 */
+.ai-highlight {
+	font-weight: bold;
+	text-decoration: underline;
+}
+.ai-list {
+	margin: 4px 0;
+	padding-left: 12px;
+}
+.ai-input-area {
+	padding: 10px;
+	display: flex;
+	gap: 8px;
+	border-top: 1px solid #eee;
+}
+.ai-input {
+	flex: 1;
+	padding: 8px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	outline: none;
+}
+.ai-input:focus {
+	border-color: #C72E29;
+}
+.ai-send {
+	background: #C72E29;
+	color: #fff;
+	border: none;
+	padding: 0 12px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.ai-send:hover {
+	background: #A5221E;
+}
+.ai-assistant.collapsed {
+	width: 0;
+	height: 0;
+	border-radius: 0;
+}
+.ai-assistant.collapsed .ai-header,
+.ai-assistant.collapsed .ai-chat,
+.ai-assistant.collapsed .ai-input-area {
+	display: none;
+}
+</style>
+</head>
+
+<body>
+<!-- 章节控制栏 -->
+<div class="chapter-control">
+    <div></div>
+	<div class="chapter-title" id="chapterTitle"><a href="18.html"><img src="../../Pictures/Camera Roll/未标题-2.png" alt="红船谣logo" width="33" height="50" /></a>第一章：南部红色革命圣地（嘉兴/井冈山/瑞金等）</div>
+	<button class="chapter-btn" id="btnChapter1">第一章：南部革命点</button>
+	<button class="chapter-btn disabled" id="btnChapter2">第二章：北部革命点</button>
+</div>
+
+<!-- AI助手模块（优化） -->
+<div class="ai-assistant" id="aiAssistant">
+	<div class="ai-toggle" id="aiToggle"><i class="fa fa-chevron-left"></i></div>
+	<div class="ai-header">
+		<div class="ai-title">红船谣 - 红色文化AI助手</div>
+	</div>
+	<div class="ai-chat" id="aiChat">
+		<div class="ai-message ai-bot">👋 你好！我是红船谣专属AI助手，可为你解答：<br/>
+			▫️ 各红色革命点的历史意义<br/>
+			▫️ 革命路线的绘制操作<br/>
+			▫️ 南北革命点的区分规则<br/>
+	  试试提问：<span class="ai-highlight">革命路线有哪些点？</span></div>
+	</div>
+	<div class="ai-input-area">
+		<input type="text" class="ai-input" id="aiInput" placeholder="比如：嘉兴红船的意义？北部有哪些革命点？" />
+		<button class="ai-send" id="aiSend"><i class="fa fa-paper-plane"></i></button>
+	</div>
+</div>
+
+<!-- 地图容器 -->
+<div id="map"></div>
+
+<!-- 外部脚本引用 -->
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js" type="text/javascript"></script>
+<script type="text/javascript">
+// <![CDATA[
+// ===================== 核心变量定义 =====================
+// 1. 地图初始化（AI地形图风格）
+var map = L.map('map').setView([33.0, 118.0], 4); // 初始聚焦中国中部，适配更多革命点
+// 高德AI地形图瓦片
+L.tileLayer('https://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+	maxZoom: 19,
+	minZoom: 3,
+	attribution: '高德AI地形图'
+}).addTo(map);
+
+// 2. 图层分组（核心分层逻辑）
+var southLayer = L.layerGroup(); // 第一序列：南部图层（下层）
+var northLayer = L.layerGroup(); // 第二序列：北部图层（上层）
+var routeLayer = L.layerGroup(); // 革命路线图层
+var flagLayer = L.layerGroup();  // 红旗标记图层
+// 初始只加载南部图层（第一章）
+southLayer.addTo(map);
+
+// 3. 核心革命路线数据（嘉兴为起点，优化路线节点贴合实际地理）
+var revolutionRoute = {
+	// 主路线节点（按革命历史进程+地理实际排序，保留原有曲折性）
+	mainPoints: [
+		{lat: 30.7563, lng: 120.7506}, // 起点：嘉兴南湖
+		{lat: 25.8240, lng: 116.0170}, // 瑞金
+		{lat: 27.7172, lng: 106.9428}, // 遵义
+		{lat: 26.5940, lng: 114.1170}, // 井冈山
+		{lat: 36.5683, lng: 109.4700}, // 延安
+		{lat: 39.3815, lng: 113.8960}, // 平型关
+		{lat: 38.2084, lng: 114.3580}  // 终点：西柏坡
+	],
+	// 终点红旗位置（西柏坡）
+	flag: {
+		lat: 38.2084,
+		lng: 114.3580
+	}
+};
+
+// 4. 扩充后的红色革命点数据（分南北，含非途经相关点）
+// 第一序列：南部革命点（改为固定不可拖动）
+var southSites = [
+	// 核心途经点
+	{
+		name: "嘉兴南湖红船",
+		lat: 30.7563,
+		lng: 120.7506,
+		img: "https://picsum.photos/id/1036/300/200",
+		intro: "浙江省嘉兴市南湖区南湖路，中共一大闭幕地，红船精神发源地。点击可查看完整革命路线～",
+		phone: "0573-82532848",
+		addr: "浙江省嘉兴市南湖区南湖路1号",
+		tag: "南",
+		type: "核心途经点"
+	},
+	{
+		name: "井冈山革命根据地",
+		lat: 26.5940,
+		lng: 114.1170,
+		img: "https://picsum.photos/id/1039/300/200",
+		intro: "江西省吉安市井冈山市，中国第一个农村革命根据地，革命摇篮。",
+		phone: "0796-6552248",
+		addr: "江西省吉安市井冈山市茨坪镇红军南路",
+		tag: "南",
+		type: "核心途经点"
+	},
+	{
+		name: "瑞金中央革命根据地",
+		lat: 25.8240,
+		lng: 116.0170,
+		img: "https://picsum.photos/id/1040/300/200",
+		intro: "江西省赣州市瑞金市，中华苏维埃共和国临时中央政府诞生地，红色故都。",
+		phone: "0797-2522600",
+		addr: "江西省赣州市瑞金市沙洲坝镇红井路",
+		tag: "南",
+		type: "核心途经点"
+	},
+	{
+		name: "遵义会议会址",
+		lat: 27.7172,
+		lng: 106.9428,
+		img: "https://picsum.photos/id/1041/300/200",
+		intro: "贵州省遵义市红花岗区，遵义会议召开地，中国革命史上的重要转折点。",
+		phone: "0851-28222785",
+		addr: "贵州省遵义市红花岗区子尹路96号",
+		tag: "南",
+		type: "核心途经点"
+	},
+	// 新增非途经相关点
+	{
+		name: "韶山毛泽东故居",
+		lat: 27.9085,
+		lng: 112.5447,
+		img: "https://picsum.photos/id/1045/300/200",
+		intro: "湖南省湘潭市韶山市，毛泽东同志故居，红色革命发源地之一。",
+		phone: "0731-55685170",
+		addr: "湖南省湘潭市韶山市韶山乡韶山村",
+		tag: "南",
+		type: "相关革命点"
+	},
+	{
+		name: "古田会议会址",
+		lat: 25.1570,
+		lng: 116.7910,
+		img: "https://picsum.photos/id/1046/300/200",
+		intro: "福建省龙岩市上杭县，古田会议召开地，确立了党对军队的绝对领导。",
+		phone: "0597-36411古田会议会址",
+		addr: "福建省龙岩市上杭县古田镇古田路76号",
+		tag: "南",
+		type: "相关革命点"
+	},
+	{
+		name: "百色起义纪念馆",
+		lat: 23.9023,
+		lng: 106.6151,
+		img: "https://picsum.photos/id/1047/300/200",
+		intro: "广西壮族自治区百色市右江区，百色起义纪念地，西南地区重要革命点。",
+		phone: "0776-2848999",
+		addr: "广西壮族自治区百色市右江区城东路112号",
+		tag: "南",
+		type: "相关革命点"
+	}
+];
+
+// 第二序列：北部革命点（固定不可拖动，保持原有）
+var northSites = [
+	// 核心途经点
+	{
+		name: "西柏坡纪念馆",
+		lat: 38.2084,
+		lng: 114.3580,
+		img: "https://picsum.photos/id/1043/300/200",
+		intro: "河北省石家庄市平山县西柏坡镇，中共中央最后一个农村指挥所，革命路线终点。",
+		phone: "0311-82851355",
+		addr: "河北省石家庄市平山县西柏坡镇迎宾路",
+		tag: "北",
+		type: "核心途经点"
+	},
+	{
+		name: "延安革命纪念馆",
+		lat: 36.5683,
+		lng: 109.4700,
+		img: "https://picsum.photos/id/1042/300/200",
+		intro: "陕西省延安市宝塔区，中共中央在延安的重要驻地，抗战时期的革命圣地。",
+		phone: "0911-8213666",
+		addr: "陕西省延安市宝塔区王家坪路",
+		tag: "北",
+		type: "核心途经点"
+	},
+	{
+		name: "平型关大捷纪念馆",
+		lat: 39.3815,
+		lng: 113.8960,
+		img: "https://picsum.photos/id/1044/300/200",
+		intro: "山西省大同市灵丘县，平型关大捷发生地，抗战以来中国军队首次大捷。",
+		phone: "0352-8938061",
+		addr: "山西省大同市灵丘县白崖台乡平型关村",
+		tag: "北",
+		type: "核心途经点"
+	},
+	// 新增非途经相关点
+	{
+		name: "北京天安门广场",
+		lat: 39.9062,
+		lng: 116.3975,
+		img: "https://picsum.photos/id/1048/300/200",
+		intro: "北京市东城区，中华人民共和国的象征，开国大典举办地。",
+		phone: "010-65118000",
+		addr: "北京市东城区长安街",
+		tag: "北",
+		type: "相关革命点"
+	},
+	{
+		name: "狼牙山五壮士纪念馆",
+		lat: 39.0780,
+		lng: 115.1430,
+		img: "https://picsum.photos/id/1049/300/200",
+		intro: "河北省保定市易县，纪念狼牙山五壮士，华北地区重要红色教育基地。",
+		phone: "0312-8861678",
+		addr: "河北省保定市易县狼牙山镇东西水村",
+		tag: "北",
+		type: "相关革命点"
+	},
+	{
+		name: "沂蒙山革命根据地",
+		lat: 35.7230,
+		lng: 117.9890,
+		img: "https://picsum.photos/id/1050/300/200",
+		intro: "山东省临沂市沂水县，沂蒙精神发源地，华东地区重要革命根据地。",
+		phone: "0539-2251186",
+		addr: "山东省临沂市沂水县夏蔚镇王庄村",
+		tag: "北",
+		type: "相关革命点"
+	}
+];
+
+// ===================== 路线绘制与红旗标记（优化） =====================
+// 绘制红旗标记（初始隐藏）
+var flagMarker = L.marker([revolutionRoute.flag.lat, revolutionRoute.flag.lng], {
+	icon: L.divIcon({
+		className: 'marker-flag',
+		html: '<i class="fa fa-flag"></i>',
+		iconSize: [40, 40]
+	}),
+	draggable: false
+});
+flagMarker.bindPopup("<div class='popup-box'><div class='popup-title-north'>革命路线终点</div><p style='text-align:center;color:#C72E29;font-weight:bold;'>革命胜利 · 红旗飘扬</p></div>");
+flagMarker.addTo(flagLayer);
+
+// 分步绘制路线函数（降低速度，保留原有曲折路线）
+var routePolyline; // 路线对象
+function drawRouteStepByStep() {
+	// 清空原有路线
+	if(routePolyline) routeLayer.removeLayer(routePolyline);
+	
+	// 核心修改1：路线速度调慢（从800ms改为2000ms每段，可根据需求调整）
+	var step = 0;
+	var totalSteps = revolutionRoute.mainPoints.length - 1;
+	var drawInterval = setInterval(function() {
+		step++;
+		// 截取当前步骤的路线点（保留原有曲折性，不修改坐标）
+		var currentPoints = revolutionRoute.mainPoints.slice(0, step + 1);
+		// 绘制/更新路线（保留原有样式，不修改曲折度）
+		if(routePolyline) routeLayer.removeLayer(routePolyline);
+		routePolyline = L.polyline(currentPoints, {
+			color: '#C72E29',       // 红色主调贴合红色主题
+			weight: 6,              // 适中宽度，适配地形
+			opacity: 0.85,          // 半透明不遮挡地图地形
+			lineCap: 'round',       // 圆角端点更自然
+			lineJoin: 'round',      // 圆角连接更贴合地理曲线
+			className: 'route-line'
+		}).addTo(routeLayer);
+		
+		// 绘制完成（最后一步）
+		if(step >= totalSteps) {
+			clearInterval(drawInterval);
+			// 显示红旗标记
+			map.addLayer(flagLayer);
+			// 地图自动聚焦到终点
+			map.setView([revolutionRoute.flag.lat, revolutionRoute.flag.lng], 5);
+			// 更友好的提示
+			alert('✅ 完整革命路线绘制完成！\n终点西柏坡已亮起红旗，可切换第二章查看北部所有革命点～');
+		}
+	}, 2000); // 核心修改：速度从800ms改为2000ms，更慢且保留原有曲折路线
+}
+
+// ===================== 标记添加逻辑（核心修改：所有交互点固定） =====================
+// 1. 添加南部标记（核心修改2：改为固定不可拖动）
+for(var i=0; i<southSites.length; i++){
+	var site = southSites[i];
+	var marker = L.marker([site.lat, site.lng], {
+		icon: L.divIcon({
+			className: 'marker-south',
+			html: '红船谣',
+			iconSize: [60, 60]
+		}),
+		draggable: false // 核心修改：南部点改为固定不可拖动
+	});
+	
+	// 南部弹窗（补充点位类型，保持原有）
+	var encodedAddr = encodeURIComponent(site.addr);
+	var webNavUrl = "https://amap.com/search?query=" + encodedAddr;
+	var popupContent = "<div class='popup-box'>" +
+		"<div class='popup-title-south'>" + site.name + "（南部" + site.type + "）</div>" +
+		"<img src='" + site.img + "' class='popup-img' alt='" + site.name + "' />" +
+		"<div class='popup-info'><span class='popup-label'>简介：</span>" + site.intro + "</div>" +
+		"<div class='popup-info'><span class='popup-label'>电话：</span>" + site.phone + "</div>" +
+		"<div class='popup-info'><span class='popup-label'>地址：</span>" + site.addr + "</div>" +
+		"<a href='" + webNavUrl + "' target='_blank' class='nav-btn'><i class='fa fa-desktop'></i> 导航</a>" +
+	"</div>";
+	
+	marker.bindPopup(popupContent);
+	marker.addTo(southLayer);
+	
+	// 嘉兴标记点击事件：绘制路线 + 解锁第二章（保持原有）
+	if(site.name.indexOf("嘉兴") !== -1) {
+		marker.on('click', function(){
+			document.getElementById('btnChapter2').classList.remove('disabled');
+			// 添加路线图层并开始绘制
+			map.addLayer(routeLayer);
+			drawRouteStepByStep();
+		});
+	} else {
+		// 其他南部点仅解锁第二章（保持原有）
+		marker.on('click', function(){
+			document.getElementById('btnChapter2').classList.remove('disabled');
+		});
+	}
+	
+	// 核心修改3：移除南部点的拖拽事件（因为已固定）
+	// 原拖拽事件代码已删除，确保无法拖拽
+}
+
+// 2. 添加北部标记（固定不可拖动，保持原有）
+for(var i=0; i<northSites.length; i++){
+	var site = northSites[i];
+	var marker = L.marker([site.lat, site.lng], {
+		icon: L.divIcon({
+			className: 'marker-north',
+			html: '红船谣',
+			iconSize: [55, 55]
+		}),
+		draggable: false // 保持原有：北部点全部固定不可拖动
+	});
+	
+	// 北部弹窗（补充点位类型，保持原有）
+	var encodedAddr = encodeURIComponent(site.addr);
+	var webNavUrl = "https://amap.com/search?query=" + encodedAddr;
+	var popupContent = "<div class='popup-box'>" +
+		"<div class='popup-title-north'>" + site.name + "（北部" + site.type + "）</div>" +
+		"<img src='" + site.img + "' class='popup-img' alt='" + site.name + "' />" +
+		"<div class='popup-info'><span class='popup-label'>简介：</span>" + site.intro + "</div>" +
+		"<div class='popup-info'><span class='popup-label'>电话：</span>" + site.phone + "</div>" +
+		"<div class='popup-info'><span class='popup-label'>地址：</span>" + site.addr + "</div>" +
+		"<a href='" + webNavUrl + "' target='_blank' class='nav-btn'><i class='fa fa-desktop'></i> 导航</a>" +
+	"</div>";
+	
+	marker.bindPopup(popupContent);
+	marker.addTo(northLayer);
+}
+
+// ===================== 章节切换逻辑（适配扩充点，保持原有） =====================
+var btnChapter1 = document.getElementById('btnChapter1');
+var btnChapter2 = document.getElementById('btnChapter2');
+var chapterTitle = document.getElementById('chapterTitle');
+
+// 第一章：显示南部图层，隐藏北部/路线/红旗图层（保持原有）
+btnChapter1.onclick = function(){
+	if(!btnChapter2.classList.contains('disabled')){
+		map.removeLayer(northLayer);
+		map.removeLayer(routeLayer);
+		map.removeLayer(flagLayer);
+		map.addLayer(southLayer);
+		// 地图聚焦南部核心区
+		map.setView([30.7563, 120.7506], 4);
+		chapterTitle.textContent = "第一章：南部红色革命圣地（嘉兴/井冈山/瑞金/韶山等）";
+	}
+};
+
+// 第二章：显示北部/路线/红旗图层，隐藏南部图层（保持原有）
+btnChapter2.onclick = function(){
+	if(!this.classList.contains('disabled')){
+		map.removeLayer(southLayer);
+		map.addLayer(northLayer);
+		map.addLayer(routeLayer);
+		map.addLayer(flagLayer);
+		// 地图聚焦北部核心区
+		map.setView([38.2084, 114.3580], 4);
+		chapterTitle.textContent = "第二章：北部红色革命圣地（西柏坡/延安/平型关等）";
+	}
+};
+
+// ===================== AI助手交互逻辑（保持原有，未修改） =====================
+var aiAssistant = document.getElementById('aiAssistant');
+var aiToggle = document.getElementById('aiToggle');
+var aiInput = document.getElementById('aiInput');
+var aiSend = document.getElementById('aiSend');
+var aiChat = document.getElementById('aiChat');
+
+// AI助手折叠/展开
+aiToggle.onclick = function(){
+	aiAssistant.classList.toggle('collapsed');
+	if(aiAssistant.classList.contains('collapsed')){
+		aiToggle.innerHTML = '<i class="fa fa-chevron-right"></i>';
+	} else {
+		aiToggle.innerHTML = '<i class="fa fa-chevron-left"></i>';
+	}
+};
+
+// AI消息发送
+aiSend.onclick = function(){
+	sendAiMessage();
+};
+aiInput.onkeydown = function(e){
+	if(e.key === 'Enter'){
+		sendAiMessage();
+	}
+};
+
+// AI消息处理（保持原有）
+function sendAiMessage(){
+	var msg = aiInput.value.trim();
+	if(msg === '') return;
+	
+	// 添加用户消息
+	var userMsg = document.createElement('div');
+	userMsg.className = 'ai-message ai-user';
+	userMsg.textContent = msg;
+	aiChat.appendChild(userMsg);
+	aiInput.value = '';
+	aiChat.scrollTop = aiChat.scrollHeight;
+	
+	// 模拟AI回复（保持原有）
+	setTimeout(function(){
+		var botMsg = document.createElement('div');
+		botMsg.className = 'ai-message ai-bot';
+		
+		// 关键词匹配回复（保持原有）
+		if(msg.indexOf('路线') !== -1 || msg.indexOf('哪些点') !== -1){
+			botMsg.innerHTML = "📌 革命路线核心途经点（按历史进程）：<br/>" +
+				"<div class='ai-list'>1. 嘉兴南湖（起点）</div>" +
+				"<div class='ai-list'>2. 瑞金</div>" +
+				"<div class='ai-list'>3. 遵义</div>" +
+				"<div class='ai-list'>4. 井冈山</div>" +
+				"<div class='ai-list'>5. 延安</div>" +
+				"<div class='ai-list'>6. 平型关</div>" +
+				"<div class='ai-list'>7. 西柏坡（终点）</div>" +
+				"<span class='ai-highlight'>提示：点击嘉兴标记可自动绘制完整路线～</span>";
+		} else if(msg.indexOf('南部') !== -1){
+			botMsg.innerHTML = "🌡️ 南部革命点包含：<br/>" +
+				"<div class='ai-list'>▫️ 核心途经点：嘉兴、井冈山、瑞金、遵义</div>" +
+				"<div class='ai-list'>▫️ 相关革命点：韶山、古田、百色</div>" +
+				"<span class='ai-highlight'>特点：均为早期革命核心区域～</span>";
+		} else if(msg.indexOf('北部') !== -1){
+			botMsg.innerHTML = "❄️ 北部革命点包含：<br/>" +
+				"<div class='ai-list'>▫️ 核心途经点：延安、平型关、西柏坡</div>" +
+				"<div class='ai-list'>▫️ 相关革命点：北京天安门、狼牙山、沂蒙山</div>" +
+				"<span class='ai-highlight'>特点：多为抗战/解放时期核心区域～</span>";
+		} else if(msg.indexOf('红船') !== -1 || msg.indexOf('嘉兴') !== -1){
+			botMsg.innerHTML = "🚢 嘉兴南湖红船意义：<br/>" +
+				"中共一大在嘉兴南湖红船上闭幕，标志着中国共产党正式成立。<br/>" +
+				"<span class='ai-highlight'>红船精神：开天辟地、敢为人先的首创精神～</span>";
+		} else {
+			botMsg.innerHTML = "💡 你可以提问这些问题：<br/>" +
+				"<div class='ai-list'>• 革命路线有哪些点？</div>" +
+				"<div class='ai-list'>• 南部有哪些革命点？</div>" +
+				"<div class='ai-list'>• 嘉兴红船的意义？</div>" +
+				"<div class='ai-list'>• 北部革命点的特点？</div>";
+		}
+		
+		aiChat.appendChild(botMsg);
+		aiChat.scrollTop = aiChat.scrollHeight;
+	}, 800);
+}
+// ]]>
+</script>
+</body>
+</html>
